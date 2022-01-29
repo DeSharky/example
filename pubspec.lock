@@ -76,13 +76,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.4"
-  flutter_screenutil:
+  flutter_slidable:
     dependency: "direct main"
     description:
-      name: flutter_screenutil
+      name: flutter_slidable
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "5.1.1"
+    version: "1.2.0"
   flutter_svg:
     dependency: "direct main"
     description:
