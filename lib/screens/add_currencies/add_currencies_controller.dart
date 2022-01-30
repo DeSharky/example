@@ -38,11 +38,11 @@ class AddCurrenciesController extends GetxController{
   }
 
   // Функция возвращает на главный экран список валют для отслеживания
-  void returnCurrencies(Function(List) pairs){
-    var _list = [];
-    isCheckedMap.forEach((k, v) => _list.add(v));
-    pairs(_list);
-    if (_list.isNotEmpty) Get.back();
+  void returnCurrencies(Function(Map) pairs){
+    var _map = {};
+    isCheckedMap.forEach((k, v) => _map..addAll({k: v}));
+    pairs(_map);
+    Get.back();
   }
 
   void _errorStatus(String error) {

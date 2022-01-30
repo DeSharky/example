@@ -1,8 +1,11 @@
-import 'package:currencies/screens/home/widgets/list_item.dart';
+import 'package:currencies/utils/colors_set.dart';
+import 'package:currencies/utils/widgets.dart';
+import 'package:currencies/widgets/add_button.dart';
+import 'package:currencies/widgets/list_item.dart';
 import 'package:currencies/utils/text_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'home_controller.dart';
+import 'package:currencies/screens/home/home_controller.dart';
 
 class HomeScreen extends StatelessWidget {
 
@@ -13,29 +16,41 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Список валют')),
-      body: Obx(
-        () => ListView.builder(
-          itemCount: controller.listItems.isNotEmpty ? controller.listItems.length : 1,
-          itemBuilder: (BuildContext context, int idx) => controller.listItems.isNotEmpty
-            ? ListItem.home(
-              idx: idx,
-              deleteItem: () => controller.deleteItem(idx),
-              pair: controller.listItems[idx].pair,
-              value: controller.listItems[idx].value,
-            )
-            : Padding(
-                padding: const EdgeInsets.only(top: 15),
-                child: Center(child: Text('Ни одной валютной пары не было добавлено', style: TextStyles.italic)),
-              ),
-        ),
+      backgroundColor: ColorsSet.appBg,
+      appBar: AppBar(
+        title: const Text('Список валют'),
+        backgroundColor: ColorsSet.appBar,
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: controller.addItem,
-        tooltip: 'Добавить валюты',
-        child: const Icon(Icons.add),
+      body: Obx(
+        () => RefreshIndicator(
+          onRefresh: controller.refreshList,
+          child: ListView(
+            shrinkWrap: true,
+            children: [
+              ListView.separated(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                padding: EdgeInsets.zero,
+                itemCount: controller.listItems.isNotEmpty ? controller.listItems.length : 1,
+                itemBuilder: (BuildContext context, int idx) => controller.listItems.isNotEmpty
+                  ? ListItem.home(
+                      deleteItem: () => controller.deleteItem(idx),
+                      pair: controller.listItems[idx].pair,
+                      value: controller.listItems[idx].value,
+                      desc: controller.listDescriptions[controller.listItems[idx].id!],
+                    )
+                  : Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 10),
+                    child: Center(child: Text('Ни одной валютной пары не было добавлено', style: TextStyles.italic)),
+                  ),
+                separatorBuilder: (BuildContext context, int index) => Widgets.divider,
+              ),
+              Widgets.divider,
+              AddButton(onTap: controller.addItem, padding: const EdgeInsets.all(15)),
+            ],
+          ),
+        ),
       ),
     );
   }
-
 }
