@@ -1,4 +1,4 @@
-import 'package:currencies/home/home_screen.dart';
+import 'package:currencies/screens/home/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

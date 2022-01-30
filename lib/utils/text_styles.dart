@@ -12,6 +12,8 @@ class TextStyles {
 
   static TextStyle get bold => defaultStyle.copyWith(fontWeight: FontWeight.w500);
 
+  static TextStyle get italic => defaultStyle.copyWith(fontStyle: FontStyle.italic);
+
   static TextStyle get textInputLabel => defaultStyle.copyWith(color: ColorsSet.greyLabel);
 
   static TextStyle get error => defaultStyle.copyWith(color: Colors.red);

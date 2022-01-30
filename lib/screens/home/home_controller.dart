@@ -1,6 +1,6 @@
 import 'dart:convert';
-import 'package:currencies/home/widgets/add_dialog.dart';
-import 'package:currencies/home/widgets/list_item.dart';
+import 'package:currencies/models/currencies_list.dart';
+import 'package:currencies/screens/add_currencies/add_currencies_screen.dart';
 import 'package:currencies/utils/config.dart';
 import 'package:currencies/widgets/snackbar.dart';
 import 'package:dio/dio.dart' show Dio, DioError;
@@ -11,8 +11,7 @@ class HomeController extends GetxController{
 
   final TextEditingController pairController = TextEditingController();
   final allFieldFilled = false.obs;
-  final listItems = <ListItem>[].obs;
-  final listItemValue = ''.obs;
+  final listItems = <CurrenciesList>[].obs;
   var dio = Dio();
 
   @override
@@ -25,36 +24,19 @@ class HomeController extends GetxController{
     super.onInit();
   }
 
-  void addItem() {
-    Get.defaultDialog(
-      title: 'Добавить валютную пару',
-      titlePadding: const EdgeInsets.symmetric(vertical: 25),
-      contentPadding: const EdgeInsets.symmetric(horizontal: 15),
-      radius: 5,
-      content: Obx(
-        () => AddDialog(
-          pairController: pairController,
-          allFieldFilled: allFieldFilled.value,
-          btnAction: () async {
-            await getPair(pairController.text);
-            listItems.add(ListItem(pair: pairController.text, values: listItemValue.value));
-            Get.back();
-            pairController.clear();
-          },
-        ),
-      ),
-    );
-  }
+  void addItem() => Get.to(() => AddCurrenciesScreen(currenciesList: (List pairs) => getPairs(pairs)));
 
   void deleteItem(int idx) => listItems.removeAt(idx);
 
-  getPair(String pair) async {
+  getPairs(List pairs) async {
     try {
-      final response = await dio.get(Config.apiUrl + '?get=rates&pairs=$pair&key=${Config.apiKey}');
+      final response = await dio.get(Config.apiUrl + '?get=rates&pairs=${pairs.join(',')}&key=${Config.apiKey}');
       // 200 HTTP code
       if (response.statusCode == 200) {
         final jsonData = json.decode(response.data);
-        listItemValue.value = jsonData['data'][pair];
+        jsonData['data'].forEach((k, v) {
+          listItems.add(CurrenciesList(pair: k, value: v));
+        });
       }
     } catch (e) {
       if (e is DioError) {
