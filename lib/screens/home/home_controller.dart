@@ -33,7 +33,7 @@ class HomeController extends GetxController{
     // Запускаем функцию refreshList каждые 10 минут, если список с валютами не пуст
     listItems.listen((p0) {
       if (p0.isNotEmpty) {
-        Timer.periodic(const Duration(minutes: 10000), (timer) => refreshList());
+        Timer.periodic(const Duration(minutes: 10), (timer) => refreshList());
       }
     });
     super.onInit();
